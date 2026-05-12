@@ -36,14 +36,11 @@ session can resume after the Opus 5-hour billing window resets.
 | Agent | Model | Thinking | Role |
 |---|---|---|---|
 | `supervisor-feedback` | Opus 4.7 | xhigh | Chng-style critical review with verbatim shorthand |
-| `structure-reviewer` | Opus 4.7 | xhigh | Narrative flow, terminology, cross-refs, figure-text-caption, GPS |
+| `structure-reviewer` | Opus 4.7 | high | Narrative flow, terminology, cross-refs, figure-text-caption, GPS |
 | `technical-reviewer` | Opus 4.7 | xhigh | Math, methodology, results, citations, bibliography hygiene |
 | `latex-layout-auditor` | Sonnet 4.6 | low | Compiled PDF float placement, subfigure alignment |
 | `prose-polisher` | Opus 4.7 | high | Applies voice-aware edits to flagged issues |
 | `section-drafter` | Opus 4.7 | xhigh | Drafts new LaTeX sections, transitions, captions, abstracts |
-
-Max thinking effort is **xhigh** — this repo never uses `megathink` /
-`think hardest`.
 
 ## What's Inside
 

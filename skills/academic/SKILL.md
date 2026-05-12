@@ -62,7 +62,7 @@ Before deploying any agent, in this order:
 | Agent | `subagent_type` | Model | Thinking | Tools | When to use |
 |---|---|---|---|---|---|
 | Supervisor Feedback | `supervisor-feedback` | opus | xhigh (`ultrathink`) | R/G/G | Chng-style critical review; voice-aware writing critique |
-| Structure Reviewer | `structure-reviewer` | opus | xhigh (`ultrathink`) | R/G/G | Narrative flow, terminology, cross-refs, figure-text-caption, GPS rhythm |
+| Structure Reviewer | `structure-reviewer` | opus | high (`think hard`) | R/G/G | Narrative flow, terminology, cross-refs, figure-text-caption, GPS rhythm |
 | Technical Reviewer | `technical-reviewer` | opus | xhigh (`ultrathink`) | R/G/G/Bash/Web | Math, methodology, results, citations, bib hygiene |
 | LaTeX Layout Auditor | `latex-layout-auditor` | sonnet | low (`think`) | R/G/G/Bash | Compiled PDF float placement, subfig alignment |
 | Prose Polisher | `prose-polisher` | opus | high (`think hard`) | R/G/G/Edit | Apply voice-aware edits; address flagged issues |

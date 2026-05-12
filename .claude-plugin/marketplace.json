@@ -1,0 +1,15 @@
+{
+  "name": "fabianritter-paper-writing-agents",
+  "owner": {
+    "name": "Fabian Ritter Gutierrez",
+    "email": ""
+  },
+  "plugins": [
+    {
+      "name": "paper-writing-agents",
+      "description": "Six specialist agents tuned to Fabian's writing voice and supervisor-feedback style. Reviews, drafts, and polishes LaTeX paper drafts with session-resumable state.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

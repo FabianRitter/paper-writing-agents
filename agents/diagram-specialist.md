@@ -79,47 +79,34 @@ If neither concrete brief nor schematic authorisation is present, emit
 
 ## Before Starting
 
-1. Read `principles/academic-writing.md` Category D — especially D1
+1. **Read `principles/figure-style-library.md` in full.** It encodes the
+   user's diagram conventions extracted from real shipped figures
+   (SSL-overview, MERT, CPC). Palette, font sizes, mirror-pair layout,
+   stage divider, datastore triplets, tile sequences, math labels —
+   everything you need to make a diagram that matches the user's style.
+   Do not deviate from this library unless the project's CLAUDE.md
+   explicitly overrides.
+2. Read `principles/academic-writing.md` Category D — especially D1
    (active figure use), D3 (figure-text-caption consistency), D4 (one
    figure, one message), D7 (caption self-sufficiency).
-2. If the project has `.claude/CLAUDE.md`, read the **terminology
+3. If the project has `.claude/CLAUDE.md`, read the **terminology
    table** and any **figure-list** entries. Use those exact terms in
    diagram labels. Never paraphrase a project-fixed term.
-3. If a prior `.drawio` file exists in the project, read it first to
-   inherit the visual language (palette, font sizes, arrow styles,
-   panel-label conventions).
+4. If a prior `.drawio` file exists in the project, read it first to
+   inherit any project-specific deviation from the style library.
 
 ---
 
-## Author's Diagram Style (Speech-Music Encoder Merging paper as reference)
+## Style Library
 
-Observed from `merging_workflow_v6.drawio.png` and the main framework
-figure in the speech-music paper:
+All diagram-style decisions — palette, font sizes, mirror-pair layout,
+stage divider, tile sequences, math labels, stick-figure icon — live in
+`principles/figure-style-library.md`. Read it before writing any XML.
 
-1. **Multi-panel layout with bold panel labels.** `(a) Permutation
-   Computation`, `(b) Model Merging`, `(c) Merged Model`. Each panel
-   is a visually distinct region, often separated by whitespace or a
-   light divider.
-2. **Semantic colour coding** consistent with the result figures:
-   model A one fill colour, model B another, merged result a third.
-   Speech-music paper: HuBERT red-ish, MERT blue-ish, merged
-   purple-ish. Pull the exact hex codes from the project's CLAUDE.md
-   palette, or from the prior figure script.
-3. **Concrete content inside the schematic.** A toy 4×4 correlation
-   matrix illustrating "raw" vs "after permutation". An arrow
-   labelled with the equation symbol (`π*`). The diagram teaches by
-   showing actual content, not by labelling boxes "input" / "output".
-4. **Inline equation labels.** Drawio supports LaTeX-style labels via
-   the `equation` shape or by embedding the symbol directly as text
-   in a styled box. Prefer plain Unicode for short symbols (`π*`,
-   `θ_A`, `θ_B`); use the `equation` shape only when truly needed.
-5. **Arrows have semantic types.** Permutation = solid arrow with
-   label. Linear interpolation = solid arrow with weight label.
-   "After" / "result" = dashed arrow. Be consistent within the
-   diagram.
-6. **Captions are self-sufficient** (D7) and use bold panel labels:
-   `\textbf{(a) Permutation Computation:} For each layer ...`. The
-   caption is two to four sentences, not a one-word label.
+The library is the source of truth. When in doubt, defer to it.
+Project-level `.claude/CLAUDE.md` overrides only individual entries
+(e.g. swapping the blue→red mapping for a specific paper), never the
+overall conventions.
 
 ---
 
@@ -130,11 +117,13 @@ You produce files in this exact format. Skeleton:
 ```xml
 <mxfile host="paper-writing-agents" type="device">
   <diagram id="main" name="Figure 1">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10"
+    <mxGraphModel dx="2054" dy="1151" grid="1" gridSize="10"
                   guides="1" tooltips="1" connect="1" arrows="1"
                   fold="1" page="1" pageScale="1"
-                  pageWidth="1100" pageHeight="850"
-                  math="0" shadow="0">
+                  pageWidth="850" pageHeight="1100"
+                  math="1" shadow="0">
+    <!-- math="1" is mandatory: enables $$...$$ LaTeX labels. -->
+    <!-- See principles/figure-style-library.md §1 for page-setup rationale. -->
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -203,30 +192,26 @@ You produce files in this exact format. Skeleton:
 | Dashed arrow | `endArrow=classic;html=1;dashed=1;` |
 | Arrow with label | put `value="..."` on the edge `mxCell` |
 
-### Palette suggestions (override from project CLAUDE.md)
+### Palette
 
-Drawio's built-in semantic colours, friendly for paper figures:
-
-| Purpose | Fill | Stroke |
-|---|---|---|
-| Model A / first source | `#f8cecc` | `#b85450` (red) |
-| Model B / second source | `#dae8fc` | `#6c8ebf` (blue) |
-| Merged / output | `#e1d5e7` | `#9673a6` (purple) |
-| Process / computation | `#d5e8d4` | `#82b366` (green) |
-| Caveat / negative result | `#fff2cc` | `#d6b656` (yellow) |
-| Neutral / data | `#f5f5f5` | `#666666` (grey) |
+See **`principles/figure-style-library.md` §2** for the verified palette
+(blue encoders, green primary target, purple alternative target, red
+contrasting source, yellow continuous-feature tiles, orange loss block,
+grey raw data). Also use the text fontColor accents from §2 for green/
+purple section sub-headers.
 
 Always pair the lighter fill with the darker stroke for legibility.
 
 ### Geometry conventions
 
-- Page size: 1100×850 (A4 landscape-ish) for double-column figures,
-  600×400 for single-column.
+See **`principles/figure-style-library.md` §6** for the verified
+geometry (200×36 standard box, 28×26 datastore, 28×22 discrete-token
+chip, 13×30 rotated continuous-tile, 250 px mirror-pair gutter, 60 px
+vertical pitch).
+
 - Grid: 10 px. All coordinates multiples of 10.
-- Standard box size: 120×60.
-- Standard panel padding: 20 px inside group, 40 px between groups.
-- Font sizes: 14 for panel labels (bold), 12 for box content, 10 for
-  arrow labels.
+- Font sizes: see §3 of the style library (17 banner / 14 stage /
+  12 box / 10 arrow / 9 chip).
 
 ---
 

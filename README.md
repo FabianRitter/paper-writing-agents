@@ -121,6 +121,15 @@ audit against a checklist → fix → re-render. Max 4 iterations.
 labels manually. The agent renders headlessly via the drawio CLI when
 available, but the source-of-truth is the editable XML.
 
+**Style library.** Diagram conventions live in
+[`principles/figure-style-library.md`](principles/figure-style-library.md) —
+palette, font sizes, mirror-pair layout, stage divider, datastore
+triplets, continuous-tile sequences, discrete-token chip rows, math
+labels via `$$...$$`, the stick-figure speaker icon, and the
+pattern-selection cheatsheet. Patterns were extracted from real shipped
+figures (the SSL-overview, MERT, and CPC diagrams). The
+diagram-specialist reads this library before generating any XML.
+
 The `figure-specialist` is **not** for method diagrams. The
 `diagram-specialist` is **not** for results plots. The routing table
 in the orchestrator skill enforces the split.

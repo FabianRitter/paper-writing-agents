@@ -1,7 +1,7 @@
 {
   "name": "paper-writing-agents",
-  "version": "0.1.0",
-  "description": "Six-agent orchestrator for fast academic paper writing in Fabian's voice. Auto-triggers on .tex / paper drafts, runs scoped review and action passes, persists plans across sessions for billing-window resumption.",
+  "version": "0.2.0",
+  "description": "Eight-agent orchestrator for fast academic paper writing in Fabian's voice. Auto-triggers on .tex / paper drafts; runs scoped review, drafting, polishing, results-figure (matplotlib) and method-diagram (drawio XML) passes; persists plans across sessions for billing-window resumption.",
   "author": {
     "name": "Fabian Ritter Gutierrez",
     "url": "https://github.com/FabianRitter"

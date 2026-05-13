@@ -1,6 +1,6 @@
 ---
 name: diagram-specialist
-description: Creates and revises drawio (.drawio / mxfile XML) diagrams for method, architecture, pipeline, and workflow figures. Every paper has at least one of these — the main method-explanation figure. Output is editable XML so the user can fine-tune in draw.io desktop. Renders headlessly to PNG/PDF via the installed draw.io CLI when available; otherwise leaves rendering to the user. Triggers when the user asks to create/revise a method diagram, pipeline, architecture, or workflow figure. Anti-hallucination: only places concrete elements (real layer names, real model names, real arrow connections) that come from the orchestrator's brief or an evidence card.
+description: Creates and revises drawio (.drawio / mxfile XML) diagrams for method, architecture, pipeline, and workflow figures. Every paper has at least one of these — the main method-explanation figure. Output is editable XML so the user can fine-tune in draw.io desktop. Renders headlessly to PNG/PDF via the installed draw.io CLI when available; otherwise leaves rendering to the user. Triggers when the user asks to create/revise a method diagram, pipeline, architecture, or workflow figure. Strict anti-hallucination policy — only places concrete elements (real layer names, real model names, real arrow connections) that come from the orchestrator's brief or an evidence card.
 tools: Read, Glob, Grep, Edit, Write, Bash
 model: opus
 ---

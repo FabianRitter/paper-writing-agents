@@ -31,7 +31,7 @@ session can resume after the Opus 5-hour billing window resets.
   `.paper-writing/session.md` and `.review/*.md`. No external tooling
   needed.
 
-## The Six Agents
+## The Seven Agents
 
 | Agent | Model | Thinking | Role |
 |---|---|---|---|
@@ -41,6 +41,7 @@ session can resume after the Opus 5-hour billing window resets.
 | `latex-layout-auditor` | Sonnet 4.6 | low | Compiled PDF float placement, subfigure alignment |
 | `prose-polisher` | Opus 4.7 | high | Applies voice-aware edits to flagged issues |
 | `section-drafter` | Opus 4.7 | xhigh | Drafts new LaTeX sections, transitions, captions, abstracts |
+| `figure-specialist` | Opus 4.7 | high | Creates/revises Python (matplotlib) result figures; **halts and requests data instead of inventing numbers when sources are missing** |
 
 ## What's Inside
 
@@ -55,7 +56,8 @@ paper-writing-agents/
 │   ├── technical-reviewer.md
 │   ├── latex-layout-auditor.md
 │   ├── prose-polisher.md
-│   └── section-drafter.md
+│   ├── section-drafter.md
+│   └── figure-specialist.md
 ├── principles/
 │   └── academic-writing.md          # 30 principles (A1–F2)
 ├── skills/
@@ -89,7 +91,27 @@ thesis repository instead.
 /academic draft a transition from method to experiments
 /academic respond to reviewer 2 comments on related work
 /academic check bibliography for missing fields and arXiv-to-published updates
+/academic generate the cross-backbone EER bar chart from reports/test_results_full_matrix.csv
+/academic revise figures/fig3_basin_width.py — make the y-axis log scale and move the legend out
 ```
+
+### Figure agent: strict anti-hallucination
+
+The `figure-specialist` agent **never invents numbers**. If you ask it to
+create a figure and the underlying CSV / NPY / prior script is not on
+disk, it halts and returns an `INFO_REQUIRED` block listing exactly which
+files it needs. Provide the path, then re-run. This is intentional —
+hallucinated figures are the single most damaging failure mode for a
+paper.
+
+The agent uses Python (matplotlib + seaborn), produces a reproducible
+`figures/<name>.py` script, a vector `.pdf`, a preview `.png`, and a
+LaTeX inclusion snippet at `figures/<name>.tex`. It runs a render-and-
+audit loop (generate → read the PNG back as an image → fix → re-render)
+before reporting back.
+
+The agent is **not** for architectural / workflow / pipeline diagrams —
+those belong to drawio, Excalidraw, or TikZ.
 
 ## How To Use (no Claude-Claw needed)
 

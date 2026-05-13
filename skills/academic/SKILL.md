@@ -67,6 +67,7 @@ Before deploying any agent, in this order:
 | LaTeX Layout Auditor | `latex-layout-auditor` | sonnet | low (`think`) | R/G/G/Bash | Compiled PDF float placement, subfig alignment |
 | Prose Polisher | `prose-polisher` | opus | high (`think hard`) | R/G/G/Edit | Apply voice-aware edits; address flagged issues |
 | Section Drafter | `section-drafter` | opus | xhigh (`ultrathink`) | R/G/G/Edit/Write/Bash | Draft new sections, transitions, captions, abstracts |
+| Figure Specialist | `figure-specialist` | opus | high (`think hard`) | R/G/G/Edit/Write/Bash | Create/revise Python (matplotlib) result figures; halts when data is missing |
 
 R/G/G = Read/Glob/Grep. Tools listed are what the agent declared in its
 frontmatter; the orchestrator does not override them.
@@ -89,6 +90,8 @@ Pick the smallest set that covers the request.
 | "audit bibliography" | technical-reviewer only (it absorbs bib hygiene) |
 | "supervisor feedback" / "what would Chng say" | supervisor-feedback only |
 | "check layout / figure placement" | latex-layout-auditor only (after `latexmk -pdf` if no PDF) |
+| "create / generate / plot a figure" | figure-specialist only — but only if a data file or prior script exists on disk; otherwise figure-specialist will halt with `INFO_REQUIRED` and you relay that to the user |
+| "revise / redraw / fix / update this figure" | figure-specialist only — point it at the existing `figures/<name>.py` script |
 | "polish this section" | supervisor-feedback (diagnose) → prose-polisher (fix) |
 | "draft an intro / abstract / related work / transition" | section-drafter only |
 | "rewrite / revise this paragraph" | prose-polisher (after one supervisor-feedback pass if not already on disk) |

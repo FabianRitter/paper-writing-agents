@@ -31,7 +31,7 @@ session can resume after the Opus 5-hour billing window resets.
   `.paper-writing/session.md` and `.review/*.md`. No external tooling
   needed.
 
-## The Seven Agents
+## The Eight Agents
 
 | Agent | Model | Thinking | Role |
 |---|---|---|---|
@@ -41,7 +41,8 @@ session can resume after the Opus 5-hour billing window resets.
 | `latex-layout-auditor` | Sonnet 4.6 | low | Compiled PDF float placement, subfigure alignment |
 | `prose-polisher` | Opus 4.7 | high | Applies voice-aware edits to flagged issues |
 | `section-drafter` | Opus 4.7 | xhigh | Drafts new LaTeX sections, transitions, captions, abstracts |
-| `figure-specialist` | Opus 4.7 | high | Creates/revises Python (matplotlib) result figures; **halts and requests data instead of inventing numbers when sources are missing** |
+| `figure-specialist` | Opus 4.7 | high | Creates/revises Python (matplotlib) **result** figures; halts and requests data instead of inventing numbers when sources are missing |
+| `diagram-specialist` | Opus 4.7 | high | Creates/revises **drawio XML** method/pipeline/architecture diagrams; output is editable in draw.io desktop |
 
 ## What's Inside
 
@@ -57,7 +58,8 @@ paper-writing-agents/
 │   ├── latex-layout-auditor.md
 │   ├── prose-polisher.md
 │   ├── section-drafter.md
-│   └── figure-specialist.md
+│   ├── figure-specialist.md
+│   └── diagram-specialist.md
 ├── principles/
 │   └── academic-writing.md          # 30 principles (A1–F2)
 ├── skills/
@@ -95,23 +97,33 @@ thesis repository instead.
 /academic revise figures/fig3_basin_width.py — make the y-axis log scale and move the legend out
 ```
 
-### Figure agent: strict anti-hallucination
+### Figures vs Diagrams — two agents, clean split
 
-The `figure-specialist` agent **never invents numbers**. If you ask it to
-create a figure and the underlying CSV / NPY / prior script is not on
-disk, it halts and returns an `INFO_REQUIRED` block listing exactly which
-files it needs. Provide the path, then re-run. This is intentional —
-hallucinated figures are the single most damaging failure mode for a
-paper.
+Every paper has two flavours of figure, and they are handled by two
+different agents:
 
-The agent uses Python (matplotlib + seaborn), produces a reproducible
-`figures/<name>.py` script, a vector `.pdf`, a preview `.png`, and a
-LaTeX inclusion snippet at `figures/<name>.tex`. It runs a render-and-
-audit loop (generate → read the PNG back as an image → fix → re-render)
-before reporting back.
+| Type | Agent | Output | When |
+|---|---|---|---|
+| **Result figure** (bar chart, line plot, heatmap, depth profile — anything that visualises numbers) | `figure-specialist` | `figures/<name>.py` + `.pdf` + `.png` + `.tex` | "plot the EER across backbones", "show the CKA depth profile" |
+| **Method / pipeline / architecture diagram** (the conceptual figure that explains *what the method does*) | `diagram-specialist` | `figures/<name>.drawio` + `.drawio.png` + `.pdf` + `.tex` | "Figure 1 explaining the three-lens diagnostic protocol", "the main method figure" |
 
-The agent is **not** for architectural / workflow / pipeline diagrams —
-those belong to drawio, Excalidraw, or TikZ.
+Both agents enforce the **strict anti-hallucination policy**: they halt
+with an `INFO_REQUIRED` block if the underlying data (figure-specialist)
+or the concrete labels and palette (diagram-specialist) are missing.
+They never invent numbers, layer indices, model names, or claim text.
+
+Both run a render-and-audit loop: generate → read the PNG back inline →
+audit against a checklist → fix → re-render. Max 4 iterations.
+
+**Why drawio for method diagrams.** The `diagram-specialist` produces
+`.drawio` XML so the user can open the file in **draw.io desktop**
+(`/Applications/draw.io.app`) and fine-tune positions, colours, and
+labels manually. The agent renders headlessly via the drawio CLI when
+available, but the source-of-truth is the editable XML.
+
+The `figure-specialist` is **not** for method diagrams. The
+`diagram-specialist` is **not** for results plots. The routing table
+in the orchestrator skill enforces the split.
 
 ## How To Use (no Claude-Claw needed)
 

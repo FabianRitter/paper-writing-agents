@@ -67,7 +67,8 @@ Before deploying any agent, in this order:
 | LaTeX Layout Auditor | `latex-layout-auditor` | sonnet | low (`think`) | R/G/G/Bash | Compiled PDF float placement, subfig alignment |
 | Prose Polisher | `prose-polisher` | opus | high (`think hard`) | R/G/G/Edit | Apply voice-aware edits; address flagged issues |
 | Section Drafter | `section-drafter` | opus | xhigh (`ultrathink`) | R/G/G/Edit/Write/Bash | Draft new sections, transitions, captions, abstracts |
-| Figure Specialist | `figure-specialist` | opus | high (`think hard`) | R/G/G/Edit/Write/Bash | Create/revise Python (matplotlib) result figures; halts when data is missing |
+| Figure Specialist | `figure-specialist` | opus | high (`think hard`) | R/G/G/Edit/Write/Bash | Create/revise Python (matplotlib) **result figures**; halts when data is missing |
+| Diagram Specialist | `diagram-specialist` | opus | high (`think hard`) | R/G/G/Edit/Write/Bash | Create/revise **drawio XML** method / pipeline / architecture diagrams; output is GUI-editable in draw.io desktop; renders via the installed drawio CLI |
 
 R/G/G = Read/Glob/Grep. Tools listed are what the agent declared in its
 frontmatter; the orchestrator does not override them.
@@ -90,8 +91,11 @@ Pick the smallest set that covers the request.
 | "audit bibliography" | technical-reviewer only (it absorbs bib hygiene) |
 | "supervisor feedback" / "what would Chng say" | supervisor-feedback only |
 | "check layout / figure placement" | latex-layout-auditor only (after `latexmk -pdf` if no PDF) |
-| "create / generate / plot a figure" | figure-specialist only — but only if a data file or prior script exists on disk; otherwise figure-specialist will halt with `INFO_REQUIRED` and you relay that to the user |
-| "revise / redraw / fix / update this figure" | figure-specialist only — point it at the existing `figures/<name>.py` script |
+| "create / generate / plot a results figure / bar chart / heatmap" | figure-specialist only — but only if a data file or prior script exists on disk; otherwise figure-specialist will halt with `INFO_REQUIRED` and you relay that to the user |
+| "revise / redraw / fix / update this results figure" | figure-specialist only — point it at the existing `figures/<name>.py` script |
+| "create / draw / make a method / pipeline / architecture / workflow / framework diagram" | diagram-specialist only — output is drawio XML (`.drawio`) editable in draw.io desktop |
+| "revise / edit / update Figure 1" (the main method figure) | diagram-specialist only — point it at the existing `figures/<name>.drawio` source. Do NOT use figure-specialist for these. |
+| "Figure 1 to explain the method" (any new paper, by default) | diagram-specialist — this is the canonical "main method figure" every paper has |
 | "polish this section" | supervisor-feedback (diagnose) → prose-polisher (fix) |
 | "draft an intro / abstract / related work / transition" | section-drafter only |
 | "rewrite / revise this paragraph" | prose-polisher (after one supervisor-feedback pass if not already on disk) |

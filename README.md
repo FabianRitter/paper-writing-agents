@@ -40,7 +40,7 @@ session can resume after the Opus 5-hour billing window resets.
 | `technical-reviewer` | Opus 4.7 | xhigh | Math, methodology, results, citations, bibliography hygiene |
 | `latex-layout-auditor` | Sonnet 4.6 | low | Compiled PDF float placement, subfigure alignment |
 | `prose-polisher` | Opus 4.7 | high | Applies voice-aware edits to flagged issues |
-| `section-drafter` | Opus 4.7 | xhigh | Drafts new LaTeX sections, transitions, captions, abstracts |
+| `section-drafter` | Opus 4.7 | max | Drafts new LaTeX sections, transitions, captions, abstracts, uses /academic-writing |
 | `figure-specialist` | Opus 4.7 | high | Creates/revises Python (matplotlib) **result** figures; halts and requests data instead of inventing numbers when sources are missing |
 | `diagram-specialist` | Opus 4.7 | high | Creates/revises **drawio XML** method/pipeline/architecture diagrams; output is editable in draw.io desktop |
 

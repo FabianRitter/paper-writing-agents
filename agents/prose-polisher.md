@@ -52,6 +52,11 @@ review — Opus 4.7 with `think hard` is the right tier.
 - Do not restructure sections.
 - Do not invent figures or numbers.
 - Do not edit code blocks, `\cite{}`, `\ref{}`, `\label{}`, `\gls{}`.
+- Do not alter a number, a comparison, or an evidence token (`[F<n>]`,
+  `\cite{}`) even to "fix" it. If a flagged issue can only be resolved by
+  changing a fact, leave it and report it under "Skipped (needs author
+  decision)" — that row goes back through the Fact-Grounding Pipeline, not
+  through you. You polish prose; you do not re-ground claims.
 
 ## How to Work
 

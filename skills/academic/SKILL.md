@@ -38,6 +38,19 @@ user before acting.
 6. **Trigger scope: papers only.** If the project looks like a thesis (e.g.
    `thesis.tex`, `\documentclass{thesis}`, `Chapter` files), defer to the
    thesis repository and explain so in one sentence.
+7. **No fact without a source.** Any task that produces factual content
+   (drafting, abstract, contributions, results prose, responding to
+   reviewers with new claims) runs the Fact-Grounding Pipeline below. The
+   drafter is given a ledger of real numbers and a closed set of citation
+   keys; a deterministic gate and a scoped verifier check the output before
+   it is accepted. This is structural, not advisory — a "please be
+   accurate" instruction does not stop fabrication.
+8. **Targeted verification, never blanket self-critique.** Send only the
+   *failing* claim classes (numeric, comparative, citation) back for
+   re-grounding. Never instruct the drafter or polisher to "review your own
+   draft" wholesale — forced self-critique on mostly-correct prose
+   manufactures false problems and degrades good writing. Diagnose with a
+   separate agent against a separate source; fix the named rows only.
 
 ## Setup: Context Loading (do once per session)
 
@@ -56,6 +69,10 @@ Before deploying any agent, in this order:
 6. **Check for prior reviews.** Glob `.review/*.md`. If any cover the
    current scope and the files have not changed since (compare against
    `git log --since=<review-date> -- <files>`), reuse those findings.
+7. **Build the facts ledger (drafting tasks only).** If the task will
+   produce factual content, build two artifacts before deploying the
+   drafter (see Fact-Grounding Pipeline → F1). Skip this for pure
+   review / layout / figure tasks that assert no new numbers.
 
 ## Available Agents
 
@@ -64,6 +81,7 @@ Before deploying any agent, in this order:
 | Supervisor Feedback | `supervisor-feedback` | opus | xhigh (`ultrathink`) | R/G/G | Chng-style critical review; voice-aware writing critique |
 | Structure Reviewer | `structure-reviewer` | opus | high (`think hard`) | R/G/G | Narrative flow, terminology, cross-refs, figure-text-caption, GPS rhythm |
 | Technical Reviewer | `technical-reviewer` | opus | xhigh (`ultrathink`) | R/G/G/Bash/Web | Math, methodology, results, citations, bib hygiene |
+| Fact Verifier | `fact-verifier` | opus | xhigh (`ultrathink`) | R/G/G/Bash/Web | Claim-by-claim grounding against a real source; scoped packets only, never the full draft |
 | LaTeX Layout Auditor | `latex-layout-auditor` | sonnet | low (`think`) | R/G/G/Bash | Compiled PDF float placement, subfig alignment |
 | Prose Polisher | `prose-polisher` | opus | high (`think hard`) | R/G/G/Edit | Apply voice-aware edits; address flagged issues |
 | Section Drafter | `section-drafter` | opus | xhigh (`ultrathink`) | R/G/G/Edit/Write/Bash | Draft new sections, transitions, captions, abstracts |
@@ -97,9 +115,9 @@ Pick the smallest set that covers the request.
 | "revise / edit / update Figure 1" (the main method figure) | diagram-specialist only — point it at the existing `figures/<name>.drawio` source. Do NOT use figure-specialist for these. |
 | "Figure 1 to explain the method" (any new paper, by default) | diagram-specialist — this is the canonical "main method figure" every paper has |
 | "polish this section" | supervisor-feedback (diagnose) → prose-polisher (fix) |
-| "draft an intro / abstract / related work / transition" | section-drafter only |
-| "rewrite / revise this paragraph" | prose-polisher (after one supervisor-feedback pass if not already on disk) |
-| "respond to reviewer comments" | structure-reviewer (map comments to sections) → section-drafter + prose-polisher (apply) |
+| "draft an intro / abstract / related work / transition / contributions / results prose" | **Fact-Grounding Pipeline**: build-ledger → section-drafter → `fact-gate.py` → fact-verifier (scoped, on grounded + flagged claims) → accept-or-return |
+| "rewrite / revise this paragraph" | prose-polisher (after one supervisor-feedback pass if not already on disk); if the rewrite introduces or changes a number/comparison/citation, run the Fact-Grounding Pipeline on it |
+| "respond to reviewer comments" | structure-reviewer (map comments to sections) → section-drafter + prose-polisher (apply) → Fact-Grounding Pipeline on any section where a new factual claim was added |
 
 ## How to Operate
 
@@ -143,7 +161,10 @@ schema (overwrite each session):
 If this session is interrupted, the next session should:
 1. Read this file.
 2. Read .review/2026-05-12-method.md if it exists.
-3. Pick up at the first non-completed step.
+3. Read .paper-writing/facts.md, cite-keys.txt, and any
+   claims-<scope>.md — the ledger and manifests survive on disk, so the
+   drafter does not need to be re-grounded from scratch.
+4. Pick up at the first non-completed step.
 ```
 
 Update this file after each agent completes by marking the step
@@ -181,6 +202,103 @@ Default behaviour after synthesis:
 
 Do not ask "which issues should I fix first?" — fix all `Critical` and
 `Important`, skip `Minor` unless explicitly requested.
+
+## Fact-Grounding Pipeline
+
+Runs whenever a task produces factual content. The drafter never invents a
+number or a citation because it is never the authority on either — the
+ledger is, and a deterministic gate plus a scoped verifier enforce it.
+
+### F1 — Build the ledger and the closed set (orchestrator owns this)
+
+Before deploying the drafter, write two files to `.paper-writing/`:
+
+- **`facts.md`** — every quantitative result the section may state, each
+  with a stable id and a locatable origin. The orchestrator extracts these
+  from the project's results tables / `.csv` / experiment logs — *not* from
+  prose. Schema:
+
+  ```markdown
+  # Facts Ledger — <project>
+  | id | claim | value | origin |
+  |---|---|---|---|
+  | F1 | IC accuracy gain vs distil baseline, CHiME-3 | +4.77 pts | results/superb.csv:IC, Table 3 |
+  | F2 | WER on test-clean | 6.1 | results/asr.csv:wer, Table 2 |
+  ```
+
+  If a number the user wants stated is not derivable from a real source on
+  disk, it does **not** get a row. The drafter will mark it
+  `MISSING-NUMBERS`; you relay that gap to the user. Never invent a row.
+
+- **`cite-keys.txt`** — the closed citation set: every key from the
+  project `.bib`(s), one per line. The drafter may use only these.
+
+### F2 — Deploy the drafter, re-grounded
+
+Deploy `section-drafter` with the ledger path, the closed-set path, and a
+**per-section re-grounding preface** in the prompt: restate, every time,
+"facts come only from `.paper-writing/facts.md`; `\cite` only from
+`.paper-writing/cite-keys.txt`; ungrounded factual sentence → token
+`MISSING-NUMBERS`." Re-injecting the rule per section is the single
+cheapest anti-drift control; do not assume the drafter remembers it from a
+previous section.
+
+### F3 — Deterministic gate (no model, cannot be talked around)
+
+Run the gate over the drafted file(s):
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/fact-gate.py \
+  --tex <drafted .tex ...> \
+  --bib <project .bib or bib dir> \
+  --facts .paper-writing/facts.md \
+  --manifest .paper-writing/claims-<scope>.md --json
+```
+
+- **HARD violations** (unknown `\cite` key, dangling `[F<n>]`): exit code
+  2. Return *exactly these rows* to the drafter to fix — a fabricated key
+  or pointer, nothing else. Do not trigger a rewrite of the section.
+- **SOFT warnings** (factual line with no token, leftover placeholder):
+  exit 0. These are *routing signals*, not rejections. Collect them; they
+  become verifier packets in F4. Never bounce a whole section on SOFT.
+
+### F4 — Scoped verification (the rubber-stamp breaker)
+
+Slice the claim manifest plus the SOFT lines into **per-claim packets** and
+deploy `fact-verifier`. Each packet is `{claim sentence, type, evidence,
+source pointer}` — **never the drafted section, never the drafter's
+rationale**. Passing the draft back in recreates the same-context loop the
+verifier exists to break.
+
+On return:
+
+- Coerce any verdict with an empty `quote` to `UNSUPPORTED`, whatever the
+  verifier concluded.
+- For `numeric` / `comparative`, compare `claim_value` to `source_value`
+  **in code** (string/number equality), not by trusting the verifier's
+  prose. Mismatch → `UNSUPPORTED`.
+- Persist all verdicts to `.review/YYYY-MM-DD-<scope>-facts.md`.
+
+### F5 — Accept-or-return gate (structural)
+
+A section is **accepted** only when: zero HARD gate violations, and every
+numeric / comparative / citation claim is `SUPPORTED`, or honestly marked
+`MISSING-NUMBERS` / `[CITE: …]`.
+
+Otherwise return to the drafter **the specific failing rows only**, with
+the instruction: re-ground from the ledger, or downgrade the sentence to a
+placeholder. Not "rewrite the section", not "improve the writing" — the
+prose the verifier did not flag is presumed correct and must be left alone.
+Re-run F3–F5 on the returned rows until clean or the user is asked to
+supply the missing source. Cap at two return cycles, then surface the
+unresolved rows to the user rather than looping.
+
+### What this costs (be honest in the plan)
+
+The gate is free (deterministic, no model). The verifier adds one scoped
+Opus pass over the *factual* sentences only — not the whole draft. Budget
+it; do not silently skip it to save tokens. Skipping verification is the
+failure mode this pipeline exists to remove.
 
 ## Session-Resume Protocol (no Claude-Claw needed)
 
@@ -287,13 +405,26 @@ counts, and the top 3.
 - **Do not ask the user three pre-writing questions.** The drafter reads
   adjacent sections to infer voice and scope. If the request is too vague
   to act on, ask one targeted question, not five.
-- **Do not deploy all six agents on a "review my abstract" request.** That
+- **Do not deploy every agent on a "review my abstract" request.** That
   is one or two agents at most.
 - **Do not re-read the principles file inside the orchestrator after the
   first read.** It is unchanging.
 - **Do not lose the session.md.** Every step transition updates it. Even
   if the orchestrator stops mid-deployment, the file should still point
   at the next pending step.
+- **Do not pass the drafted section to the fact-verifier.** It receives
+  claim-plus-source packets only. The full draft re-creates the
+  same-context loop and the verifier will rubber-stamp.
+- **Do not run a blanket self-critique or generic-improvement pass.**
+  Verification is targeted at flagged numeric / comparative / citation
+  rows. Prose the verifier did not flag is presumed correct; leave it.
+- **Do not bounce a section on SOFT gate warnings.** SOFT is a routing
+  signal to the verifier, not a rejection. Only HARD violations and
+  UNSUPPORTED/SUBSTITUTED verdicts return rows to the drafter.
+- **Do not invent a facts-ledger row to satisfy a request.** If the
+  number is not derivable from a real source on disk, it stays
+  `MISSING-NUMBERS` and you tell the user. The ledger is the trust root;
+  poisoning it defeats the whole pipeline.
 
 ## User's Request
 

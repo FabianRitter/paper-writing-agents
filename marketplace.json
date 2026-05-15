@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "paper-writing-agents",
-      "description": "Eight specialist agents tuned to Fabian's writing voice and supervisor-feedback style. Reviews, drafts, polishes LaTeX paper drafts, creates Python (matplotlib) result figures, and authors drawio XML method diagrams. Session-resumable.",
+      "description": "Nine specialist agents tuned to Fabian's writing voice and supervisor-feedback style. Reviews, drafts, polishes LaTeX paper drafts, creates Python (matplotlib) result figures, authors drawio XML method diagrams, and fact-grounds every numeric/citation claim against a closed-set ledger before accepting it. Session-resumable.",
       "source": "./",
       "category": "productivity"
     }

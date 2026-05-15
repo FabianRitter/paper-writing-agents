@@ -1,17 +1,18 @@
 # Paper-Writing Agents
 
 A [Claude Code plugin](https://docs.anthropic.com/en/docs/claude-code/plugins)
-that ships six specialist agents for academic **paper** writing — tuned to
+that ships nine specialist agents for academic **paper** writing — tuned to
 Fabian's voice and Prof. Chng Eng Siong's supervisor feedback style.
 
 For thesis-length work, use the separate thesis-writing repository.
 
 ## Design Philosophy
 
-Six agents, three review + one mechanical + two action. The orchestrator
-decides which to deploy and executes — it does not run a Q&A loop with the
-user. Every reviewer report is written to disk so a fresh Claude Code
-session can resume after the Opus 5-hour billing window resets.
+Nine agents: review, draft, polish, fact-verify, results figures, method
+diagrams. The orchestrator decides which to deploy and executes — it does
+not run a Q&A loop with the user. Every reviewer report is written to disk
+so a fresh Claude Code session can resume after the Opus 5-hour billing
+window resets.
 
 - **Voice-first.** Drafting and polishing agents read
   [`skills/academic-writing/SKILL.md`](skills/academic-writing/SKILL.md)
@@ -25,19 +26,28 @@ session can resume after the Opus 5-hour billing window resets.
 - **Goal–Problem–Solution rhythm.** Every paper section should follow GPS.
   The plugin itself works the same way: identify the goal, diagnose the
   problem, deploy the right agent to fix it.
+- **Fact-grounding over trust.** The drafter is never the authority on a
+  number or a citation. The orchestrator builds a closed-set facts ledger
+  and citation list from real sources on disk; a deterministic gate
+  (`scripts/fact-gate.py`) rejects unknown `\cite` keys and dangling
+  evidence tokens; a scoped `fact-verifier` checks each grounded claim
+  against the real source — never against the draft that produced it.
+  Verification is targeted at flagged claims, not a blanket self-critique
+  (which measurably degrades correct prose).
 - **Token discipline.** Sonnet for mechanical work, scoped file ranges,
   cached principles file, no multi-variant drafting, no per-edit responses.
 - **Session-resumable.** Plan and reviewer findings persist to
   `.paper-writing/session.md` and `.review/*.md`. No external tooling
   needed.
 
-## The Eight Agents
+## The Nine Agents
 
 | Agent | Model | Thinking | Role |
 |---|---|---|---|
 | `supervisor-feedback` | Opus 4.7 | xhigh | Chng-style critical review with verbatim shorthand |
 | `structure-reviewer` | Opus 4.7 | high | Narrative flow, terminology, cross-refs, figure-text-caption, GPS |
 | `technical-reviewer` | Opus 4.7 | xhigh | Math, methodology, results, citations, bibliography hygiene |
+| `fact-verifier` | Opus 4.7 | xhigh | Claim-by-claim grounding against a real source; scoped packets only, never the full draft |
 | `latex-layout-auditor` | Sonnet 4.6 | low | Compiled PDF float placement, subfigure alignment |
 | `prose-polisher` | Opus 4.7 | high | Applies voice-aware edits to flagged issues |
 | `section-drafter` | Opus 4.7 | max | Drafts new LaTeX sections, transitions, captions, abstracts, uses /academic-writing |
@@ -55,11 +65,14 @@ paper-writing-agents/
 │   ├── supervisor-feedback.md
 │   ├── structure-reviewer.md
 │   ├── technical-reviewer.md
+│   ├── fact-verifier.md
 │   ├── latex-layout-auditor.md
 │   ├── prose-polisher.md
 │   ├── section-drafter.md
 │   ├── figure-specialist.md
 │   └── diagram-specialist.md
+├── scripts/
+│   └── fact-gate.py                 # deterministic closed-set / token gate
 ├── principles/
 │   └── academic-writing.md          # 30 principles (A1–F2)
 ├── skills/

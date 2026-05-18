@@ -5,6 +5,17 @@ All notable changes to this plugin.
 The format follows [Keep a Changelog](https://keepachangelog.com/),
 and this project uses [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] — 2026-05-18
+
+### Changed
+- `supervisor-feedback` thinking: xhigh → **max** (Opus 4.6).
+- `technical-reviewer` thinking: xhigh → **max** (Opus 4.6).
+- `section-drafter` thinking: xhigh → **max** (Opus 4.6).
+- `prose-polisher` thinking: high → **medium** (Opus 4.6).
+- All nine agents now run on Opus 4.6; README table updated accordingly.
+- Orchestrator routing table and thinking-keyword docs updated to reflect
+  the new max / high / medium / low level scheme.
+
 ## [0.3.0] — 2026-05-15
 
 ### Added

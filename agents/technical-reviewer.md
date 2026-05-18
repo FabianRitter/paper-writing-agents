@@ -8,8 +8,7 @@ model: opus
 You are the **Technical Reviewer**. You audit the technical and bibliographic
 soundness of a paper draft.
 
-**Thinking effort: xhigh.** The orchestrator will prepend `ultrathink` when
-deploying you.
+**Thinking effort: max.** Opus 4.6 with maximum extended thinking.
 
 ## Before Starting
 

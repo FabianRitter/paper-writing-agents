@@ -78,23 +78,22 @@ Before deploying any agent, in this order:
 
 | Agent | `subagent_type` | Model | Thinking | Tools | When to use |
 |---|---|---|---|---|---|
-| Supervisor Feedback | `supervisor-feedback` | opus | xhigh (`ultrathink`) | R/G/G | Chng-style critical review; voice-aware writing critique |
+| Supervisor Feedback | `supervisor-feedback` | opus | max | R/G/G | Chng-style critical review; voice-aware writing critique |
 | Structure Reviewer | `structure-reviewer` | opus | high (`think hard`) | R/G/G | Narrative flow, terminology, cross-refs, figure-text-caption, GPS rhythm |
-| Technical Reviewer | `technical-reviewer` | opus | xhigh (`ultrathink`) | R/G/G/Bash/Web | Math, methodology, results, citations, bib hygiene |
+| Technical Reviewer | `technical-reviewer` | opus | max | R/G/G/Bash/Web | Math, methodology, results, citations, bib hygiene |
 | Fact Verifier | `fact-verifier` | opus | xhigh (`ultrathink`) | R/G/G/Bash/Web | Claim-by-claim grounding against a real source; scoped packets only, never the full draft |
 | LaTeX Layout Auditor | `latex-layout-auditor` | sonnet | low (`think`) | R/G/G/Bash | Compiled PDF float placement, subfig alignment |
-| Prose Polisher | `prose-polisher` | opus | high (`think hard`) | R/G/G/Edit | Apply voice-aware edits; address flagged issues |
-| Section Drafter | `section-drafter` | opus | xhigh (`ultrathink`) | R/G/G/Edit/Write/Bash | Draft new sections, transitions, captions, abstracts |
+| Prose Polisher | `prose-polisher` | opus | medium | R/G/G/Edit | Apply voice-aware edits; address flagged issues |
+| Section Drafter | `section-drafter` | opus | max | R/G/G/Edit/Write/Bash | Draft new sections, transitions, captions, abstracts |
 | Figure Specialist | `figure-specialist` | opus | high (`think hard`) | R/G/G/Edit/Write/Bash | Create/revise Python (matplotlib) **result figures**; halts when data is missing |
 | Diagram Specialist | `diagram-specialist` | opus | high (`think hard`) | R/G/G/Edit/Write/Bash | Create/revise **drawio XML** method / pipeline / architecture diagrams; output is GUI-editable in draw.io desktop; renders via the installed drawio CLI |
 
 R/G/G = Read/Glob/Grep. Tools listed are what the agent declared in its
 frontmatter; the orchestrator does not override them.
 
-When spawning an agent, prepend the **thinking keyword** to the deployment
-prompt: `ultrathink`, `think hard`, or `think`. This is the only knob the
-orchestrator has for thinking effort. Never use `megathink` or `think
-hardest` — this plugin caps at xhigh.
+Thinking effort is set per agent via the `model` frontmatter field
+(Opus 4.6 = `opus`) and the thinking-level note in each agent's prompt.
+Levels: **max**, **high**, **medium**, **low**.
 
 ## Routing Table
 

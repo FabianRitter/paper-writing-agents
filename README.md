@@ -8,9 +8,10 @@ For thesis-length work, use the separate thesis-writing repository.
 
 ## Design Philosophy
 
-Nine agents: review, draft, polish, fact-verify, results figures, method
-diagrams. The orchestrator decides which to deploy and executes — it does
-not run a Q&A loop with the user. Every reviewer report is written to disk
+Nine agents: supervisor-feedback, structure-reviewer, technical-reviewer,
+fact-verifier, latex-layout-auditor, prose-polisher, section-drafter,
+figure-specialist, diagram-specialist. The orchestrator decides which to
+deploy and executes — it does not run a Q&A loop with the user. Every reviewer report is written to disk
 so a fresh Claude Code session can resume after the Opus 5-hour billing
 window resets.
 

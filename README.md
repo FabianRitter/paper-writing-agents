@@ -50,10 +50,10 @@ window resets.
 | `technical-reviewer` | Opus 4.6 | max | Math, methodology, results, citations, bibliography hygiene |
 | `fact-verifier` | Opus 4.6 | xhigh | Claim-by-claim grounding against a real source; scoped packets only, never the full draft |
 | `latex-layout-auditor` | Sonnet 4.6 | low | Compiled PDF float placement, subfigure alignment |
-| `prose-polisher` | Opus 4.6 | medium | Applies voice-aware edits to flagged issues |
-| `section-drafter` | Opus 4.6 | max | Drafts new LaTeX sections, transitions, captions, abstracts, uses /academic-writing |
-| `figure-specialist` | Opus 4.6 | high | Creates/revises Python (matplotlib) **result** figures; halts and requests data instead of inventing numbers when sources are missing |
-| `diagram-specialist` | Opus 4.6 | high | Creates/revises **drawio XML** method/pipeline/architecture diagrams; output is editable in draw.io desktop |
+| `prose-polisher` | Opus 4.8 | max | Applies voice-aware edits to flagged issues |
+| `section-drafter` | Opus 4.8 | max | Drafts new LaTeX sections, transitions, captions, abstracts, uses /academic-writing |
+| `figure-specialist` | Opus 4.8 | high | Creates/revises Python (matplotlib) **result** figures; halts and requests data instead of inventing numbers when sources are missing |
+| `diagram-specialist` | Opus 4.8 | high | Creates/revises **drawio XML** method/pipeline/architecture diagrams; output is editable in draw.io desktop |
 
 ## What's Inside
 
